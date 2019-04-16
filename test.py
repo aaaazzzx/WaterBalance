@@ -1,11 +1,24 @@
 import wx    #1 导入必备的wxPython包
+import Demo
+
 
 class App(wx.App):    #2 子类化wxPython应用程序类
 
     def OnInit(self):    #3 定义一个应用的初始化方法
-        frame = wx.Frame(parent=None,title="Bare")
+        frame = wx.Frame(parent=None,title="First",size=(400,300))
+        panel = wx.Panel(frame)
+        label = wx.StaticText(panel, label="Hello World", pos=(100, 100))
         frame.Show()
         return True
+
+class Calculation(Demo.Frame):
+    def __init__(self, parent):
+        Demo.Frame1.__init__(self, parent)
+
+    def FindSquare(self, event):
+        num = int(self.m_textCtrl1.GetValue())
+        self.m_textCtrl2.SetValue(str(num * num))
+
 
 app=App()    #4 创建一个应用程序类的实例
 app.MainLoop()    #5 进入这个应用程序的主事件循环
