@@ -5,15 +5,13 @@ import Demo
 class App(wx.App):    #2 子类化wxPython应用程序类
 
     def OnInit(self):    #3 定义一个应用的初始化方法
-        frame = wx.Frame(parent=None,title="First",size=(400,300))
-        panel = wx.Panel(frame)
-        label = wx.StaticText(panel, label="Hello World", pos=(100, 100))
+        frame = Calculation(None)
         frame.Show()
         return True
 
-class Calculation(Demo.Frame):
+class Calculation(Demo.First):
     def __init__(self, parent):
-        Demo.Frame1.__init__(self, parent)
+        Demo.First.__init__(self, parent)
 
     def FindSquare(self, event):
         num = int(self.m_textCtrl1.GetValue())

@@ -44,14 +44,14 @@ class First ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
-		self.m_button1.Bind( wx.EVT_BUTTON, self.Calculation() )
+		self.m_button1.Bind( wx.EVT_BUTTON, self.FindSquare )
 
 	def __del__( self ):
 		pass
 
 
 	# Virtual event handlers, overide them in your derived class
-	def Calculation( self, event ):
+	def FindSquare( self, event ):
 		event.Skip()
 
 
