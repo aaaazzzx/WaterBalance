@@ -63,7 +63,9 @@ class CalcFrame(WB01.WB01):
         # print(a[0].name)
         # print(a[0].Need())
             Non_environment_WaterNeed[:, i]=a[i].Need()
-        print(Non_environment_WaterNeed)
+        Non_environment00 = WaterBalance.WaterNeed("Non_environment_WaterNeed",Non_environment_WaterNeed.sum(axis=1))
+        # print(Non_environment00.Need())
+        # print(Non_environment_WaterNeed)
         # print(Non_environment1.dinge)
         # print(Non_environment1.size)
         # print(Non_environment1.Need())
@@ -74,8 +76,11 @@ class CalcFrame(WB01.WB01):
         # print(environment0.dinge)
         # print(environment0.Need())
 
-        print(Non_environment_WaterNeed )
 
+        global Final_Watter_Need
+        Final_Watter_Need = WaterBalance.Final_Need(environment0,Non_environment00)
+
+        print(Final_Watter_Need)
 
 
 
