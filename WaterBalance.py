@@ -102,12 +102,12 @@ class RiverStorageCapacity():
             self.RiverWaterNeed = WaterNeed - wateravailable
             return wateravailable
 
-river = RiverStorageCapacity(401)
-print(river.Waterlevel())
-print(river.StorageCapacity_Min)
-Need = (Final_Need(environment,Non_environment))
-print(Need[0])
-print(river.WaterAvailable(rain1.production[0],Need[0]))
+# river = RiverStorageCapacity(401)
+# print(river.Waterlevel())
+# print(river.StorageCapacity_Min)
+# Need = (Final_Need(environment,Non_environment))
+# print(Need[0])
+# print(river.WaterAvailable(rain1.production[0],Need[0]))
 
 
 
@@ -127,9 +127,9 @@ class Waihe():
         else:
             return 0
 
-Waihe = Waihe(27.44)
-print(Waihe.waterlevel,Waihe.waterlevel_Min)
-print(Waihe.WaterIn())
+# Waihe = Waihe(27.44)
+# print(Waihe.waterlevel,Waihe.waterlevel_Min)
+# print(Waihe.WaterIn())
 
 def Final_WaterAvailable(WaterIn,RiverWaterNeed):
     """最终可供水量"""
@@ -139,4 +139,4 @@ def Final_WaterAvailable(WaterIn,RiverWaterNeed):
     else :
         return WaterIn,RiverWaterNeed - WaterIn
 
-print(Final_WaterAvailable(Waihe.WaterIn(),river.RiverWaterNeed))
+# print(Final_WaterAvailable(Waihe.WaterIn(),river.RiverWaterNeed))

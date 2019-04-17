@@ -30,26 +30,13 @@ class WB01 ( wx.Frame ):
 
 		fgSizer2.Add( self.m_staticText3, 0, wx.ALL, 5 )
 
-		self.m_textCtrl5 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_textCtrl5, 0, wx.ALL, 5 )
-
-		self.m_staticText4 = wx.StaticText( self, wx.ID_ANY, u"定额", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText4.Wrap( -1 )
-
-		fgSizer2.Add( self.m_staticText4, 0, wx.ALL, 5 )
-
-		self.m_button17 = wx.Button( self, wx.ID_ANY, u"选择定额文件", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button17 = wx.Button( self, wx.ID_ANY, u"非生态用水", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer2.Add( self.m_button17, 0, wx.ALL, 5 )
 
-		self.m_staticText7 = wx.StaticText( self, wx.ID_ANY, u"面积", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText7.Wrap( -1 )
+		self.m_button22 = wx.Button( self, wx.ID_ANY, u"生态用水", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer2.Add( self.m_button22, 0, wx.ALL, 5 )
 
-		fgSizer2.Add( self.m_staticText7, 0, wx.ALL, 5 )
-
-		self.m_textCtrl6 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer2.Add( self.m_textCtrl6, 0, wx.ALL, 5 )
-
-		self.m_button19 = wx.Button( self, wx.ID_ANY, u"输入", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button19 = wx.Button( self, wx.ID_ANY, u"计算需水", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer2.Add( self.m_button19, 0, wx.ALL, 5 )
 
 		self.m_textCtrl9 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -62,14 +49,22 @@ class WB01 ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
-		self.m_button17.Bind( wx.EVT_BUTTON, self.InitUI )
+		self.m_button17.Bind( wx.EVT_BUTTON, self.InExcel01 )
+		self.m_button22.Bind( wx.EVT_BUTTON, self.InExcel02 )
+		self.m_button19.Bind( wx.EVT_BUTTON, self.WaterNeed )
 
 	def __del__( self ):
 		pass
 
 
 	# Virtual event handlers, overide them in your derived class
-	def InitUI( self, event ):
+	def InExcel01( self, event ):
+		event.Skip()
+
+	def InExcel02( self, event ):
+		event.Skip()
+
+	def WaterNeed( self, event ):
 		event.Skip()
 
 
