@@ -42,6 +42,12 @@ class WB01 ( wx.Frame ):
 		self.m_textCtrl9 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer2.Add( self.m_textCtrl9, 0, wx.ALL, 5 )
 
+		self.m_button23 = wx.Button( self, wx.ID_ANY, u"降水", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer2.Add( self.m_button23, 0, wx.ALL, 5 )
+
+		self.m_button24 = wx.Button( self, wx.ID_ANY, u"MyButton", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer2.Add( self.m_button24, 0, wx.ALL, 5 )
+
 
 		self.SetSizer( fgSizer2 )
 		self.Layout()
@@ -52,6 +58,7 @@ class WB01 ( wx.Frame ):
 		self.m_button17.Bind( wx.EVT_BUTTON, self.InExcel01 )
 		self.m_button22.Bind( wx.EVT_BUTTON, self.InExcel02 )
 		self.m_button19.Bind( wx.EVT_BUTTON, self.WaterNeed )
+		self.m_button23.Bind( wx.EVT_BUTTON, self.InExcel03 )
 
 	def __del__( self ):
 		pass
@@ -65,6 +72,9 @@ class WB01 ( wx.Frame ):
 		event.Skip()
 
 	def WaterNeed( self, event ):
+		event.Skip()
+
+	def InExcel03( self, event ):
 		event.Skip()
 
 

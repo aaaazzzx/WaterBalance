@@ -13,6 +13,8 @@ class CalcFrame(WB01.WB01):
     def __init__(self, parent):
         WB01.WB01.__init__(self, parent)
 
+    #############################################################################
+    # 需水计算
     def InExcel01(self, event):
         """用于输入非生态需水"""
         global Non_environment        # 非生态需水
@@ -81,6 +83,26 @@ class CalcFrame(WB01.WB01):
         Final_Watter_Need = WaterBalance.Final_Need(environment0,Non_environment00)
 
         print(Final_Watter_Need)
+
+
+    #############################################################################
+    # 供水能力计算
+
+    def InExcel03( self, event ):
+        """用于输入降水"""
+        global Rain        # 非生态需水
+        wildcard = "Excel 工作簿(*.xlsx)|*.xlsx|Excel 97-2003 工作簿(*.xls)|*.xls"
+        f = wx.FileDialog(self, "选择降水", os.getcwd(), "", wildcard, wx.FD_OPEN)
+
+        if f.ShowModal() == wx.ID_OK:
+            Rainf = pd.read_excel(f.GetPath())
+            # self.m_textCtrl9.SetValue()
+        f.Destroy()
+        Rain = WaterBalance.Rain( Rainf.iloc[:, 0].values, Rainf.iloc[0, 1], Rainf.iloc[0, 2])
+        print(Rain.rain, Rain.area, Rain.Production_rate, Rain.Production())
+        # print(Non_environment)
+        # return Non_environment
+
 
 
 

@@ -29,18 +29,18 @@ class GuanGai(WaterNeed):
         """需求计算"""
         return self.dinge*self.size
 
+# Early_rice = GuanGai("Early_rice",np.array([13,11]),1)
+# Middle_rice = GuanGai("Middle_rice",np.array([10,8]),1)
+# Later_rice = GuanGai("Later_rice",12,12)
+# Rape = GuanGai("Rape",12,12)    # 油菜
+# Cotton = GuanGai("Cotton",12,12)   # 棉花
+# Pond = GuanGai("Pond",12,12)    # 鱼塘
+# livestock_L = GuanGai("livestock_L",12,12)    # 大牲畜
+# livestock_S = GuanGai("livestock_S",12,12)    # 小牲畜
+#
+# environment = WaterNeed("shuidao",np.array([12,12]))    # 生态用水
 
 
-Early_rice = GuanGai("Early_rice",np.array([13,11]),1)
-Middle_rice = GuanGai("Middle_rice",np.array([10,8]),1)
-Later_rice = GuanGai("Later_rice",12,12)
-Rape = GuanGai("Rape",12,12)    # 油菜
-Cotton = GuanGai("Cotton",12,12)   # 棉花
-Pond = GuanGai("Pond",12,12)    # 鱼塘
-livestock_L = GuanGai("livestock_L",12,12)    # 大牲畜
-livestock_S = GuanGai("livestock_S",12,12)    # 小牲畜
-
-environment = WaterNeed("shuidao",np.array([12,12]))    # 生态用水
 
 def Final_Need(environment,Non_environment):
     """计算最终需水:比较生态需水与其他需水,取较大值"""
@@ -56,22 +56,24 @@ def Final_Need(environment,Non_environment):
             Final_Watter_Need.append(Non_environment.Need()[i])
     return Final_Watter_Need
 
-Non_environment = WaterNeed("Non_environment_WaterNeed",Early_rice.Need()+Middle_rice.Need())
+# Non_environment = WaterNeed("Non_environment_WaterNeed",Early_rice.Need()+Middle_rice.Need())
 # print( Final_Need(environment,Non_environment))
 
 class Rain():
     """降雨"""
-    def __init__(self,rain):
+    def __init__(self,rain,area,Production_rate):
         """初始化属性降雨量"""
         self.rain = rain
+        self.area = area
+        self.Production_rate = Production_rate
         self.production = 0
+    def Production(self):
+        self.production = self.rain * self.area * self.Production_rate
+        return self.production
 
-    def Production(self,size,Production_rate):
-        self.production = self.rain*size*Production_rate
-
-rain1 = Rain(np.array([13,11]))
+# rain1 = Rain(np.array([13,11]),1,0.5)
 # print(rain.rain)
-rain1.Production(1,0.5)
+# print(rain1.Production())
 
 class RiverStorageCapacity():
 
