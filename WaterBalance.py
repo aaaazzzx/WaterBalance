@@ -66,7 +66,7 @@ class Rain():
         self.rain = rain
         self.area = area
         self.Production_rate = Production_rate
-        self.production = 0
+        self.production = []
     def Production(self):
         self.production = self.rain * self.area * self.Production_rate
         return self.production
@@ -77,16 +77,18 @@ class Rain():
 
 class RiverStorageCapacity():
 
-    def __init__(self,StorageCapacity):
+    def __init__(self,StorageCapacity,StorageCapacity_Min):
         """初始化河道库容"""
+        # StorageCapacity 初始水量
         self.StorageCapacity = StorageCapacity
+        self.StorageCapacity_Min = StorageCapacity_Min  # 输入最低库容
+        self.RiverWaterNeed = []  # 经河道调蓄后的缺水量
+    """
         self.StorageCapacity_Min = 389.37    # 固定最低库容
-        self.RiverWaterNeed = 0  # 经河道调蓄后的缺水量
-
     def StorageCapacityMin(self,StorageCapacity_Min):
-        """提供修改最低库容的方式"""
+        # 提供修改最低库容的方式
         self.StorageCapacity_Min = StorageCapacity_Min
-
+    """
     def Waterlevel(self):
         # 此处暂时取用公式 StorageCapacity*0.0688-0.0022
         waterlevel = self.StorageCapacity *0.0688-0.0022
@@ -94,15 +96,20 @@ class RiverStorageCapacity():
 
     def WaterAvailable(self,Rain_Production, WaterNeed):
         """计算河道可供水量，同时更新河道水量"""
-        wateravailable = self.StorageCapacity + Rain_Production - self.StorageCapacity_Min
-        if wateravailable >= WaterNeed:
-            self.StorageCapacity = self.StorageCapacity + Rain_Production - WaterNeed
-            self.RiverWaterNeed = 0
-            return WaterNeed
-        else:
-            self.StorageCapacity = self.StorageCapacity_Min
-            self.RiverWaterNeed = WaterNeed - wateravailable
-            return wateravailable
+        # Rain_Production:降雨产水序列 WaterNeed：需水序列
+        wateravailable = np.zeros(len(Rain_Production))   # 河道供水能力
+        for i in range(len(Rain_Production)):
+            print(self.StorageCapacity, Rain_Production, self.StorageCapacity_Min,wateravailable)
+            wateravailable[i] = self.StorageCapacity + Rain_Production[i] - self.StorageCapacity_Min
+            if wateravailable[i] >= WaterNeed[i]:
+                self.StorageCapacity = self.StorageCapacity + Rain_Production[i] - WaterNeed[i]
+                self.RiverWaterNeed.append(0)
+                # return WaterNeed
+            else:
+                self.StorageCapacity = self.StorageCapacity_Min
+                self.RiverWaterNeed.append(WaterNeed[i] - wateravailable[i])
+                # return wateravailable
+        return self.RiverWaterNeed
 
 # river = RiverStorageCapacity(401)
 # print(river.Waterlevel())
@@ -120,14 +127,14 @@ class Waihe():
     def __init__(self,waterlevel):
         self.waterlevel = waterlevel
         self.waterlevel_Min = 26.2    # 固定地板高层
-
+        self.Water = []
     def WaterIn(self):
-        if self.waterlevel >= self.waterlevel:
-            """计算可进水量，时间为10天"""
-            Water = 1 * 1.5 * (self.waterlevel - self.waterlevel_Min) * 365 * 24 * 10 / 10000
-            return Water
-        else:
-            return 0
+        for i in range(len(self.waterlevel)):
+            if self.waterlevel[i] >= self.waterlevel_Min:
+                """计算可进水量，时间为10天"""
+                self.Water.append(1 * 1.5 * (self.waterlevel[i] - self.waterlevel_Min) * 365 * 24 * 10 / 10000)
+            else:
+                self.Water.append(0)
 
 # Waihe = Waihe(27.44)
 # print(Waihe.waterlevel,Waihe.waterlevel_Min)
@@ -135,10 +142,11 @@ class Waihe():
 
 def Final_WaterAvailable(WaterIn,RiverWaterNeed):
     """最终可供水量"""
-
-    if WaterIn > RiverWaterNeed:
-        return RiverWaterNeed,0
-    else :
-        return WaterIn,RiverWaterNeed - WaterIn
+    for i in range(len(WaterIn)):
+        print(WaterIn, RiverWaterNeed)
+        if WaterIn[i] > RiverWaterNeed[i]:
+            return RiverWaterNeed[i], 0
+        else:
+            return WaterIn[i], RiverWaterNeed[i] - WaterIn[i]
 
 # print(Final_WaterAvailable(Waihe.WaterIn(),river.RiverWaterNeed))

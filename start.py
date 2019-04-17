@@ -43,7 +43,6 @@ class CalcFrame(WB01.WB01):
 
     def WaterNeed( self, event ):
         """用于计算最终需水"""
-        global Final_Need
 
         # Non_environment
         m1, n1 = Non_environment.shape[0],Non_environment.shape[1]   # m为行，n为列
@@ -103,12 +102,64 @@ class CalcFrame(WB01.WB01):
         # print(Non_environment)
         # return Non_environment
 
+    '''
+    def InStorage(self, event):
+        global StorageCapacity
+        StorageCapacity = self.m_textCtrl13.GetValue()
+        # print(N)
+    def InStorage_Min(self, event):
+        global StorageCapacity_Min
+        StorageCapacity_Min = self.m_textCtrl14.GetValue()
+    '''
+
+
+    def WaterAvailable01(self, event):
+        # 计算降雨产水的可用水量
+        global wateravailable
+        global river
+        wateravailable = []
+        StorageCapacity = float(self.m_textCtrl13.GetValue())
+        StorageCapacity_Min = float(self.m_textCtrl14.GetValue())
+        river = WaterBalance.RiverStorageCapacity(StorageCapacity,StorageCapacity_Min)
+
+        # print(Rain.Production())
+        wateravailable = river.WaterAvailable(Rain.Production(), Final_Watter_Need)
+        # print(wateravailable)
+
+
+    def InExcel04(self, event):
+        # 导入外河水位
+        global waterlevel        # 外河水位
+        wildcard = "Excel 工作簿(*.xlsx)|*.xlsx|Excel 97-2003 工作簿(*.xls)|*.xls"
+        f = wx.FileDialog(self, "外河水位", os.getcwd(), "", wildcard, wx.FD_OPEN)
+
+        if f.ShowModal() == wx.ID_OK:
+            waterlevel = pd.read_excel(f.GetPath())
+            # self.m_textCtrl9.SetValue()
+        f.Destroy()
+
+
+    def FinalWaterAvailable(self, event):
+        Waihe = WaterBalance.Waihe(waterlevel.iloc[:, 0].values)    # 输入外河水位
+        Waihe.WaterIn()     # 计算外河可进水量
+        print(WaterBalance.Final_WaterAvailable(Waihe.Water, river.RiverWaterNeed))
+
+
 
 
 
     def test( self, event ):
         """用于测试"""
         print(Non_environment)
+
+    ############################
+    # 系列长度
+    # N = WB01.WB01.m_textCtrl10.GetValue()
+    # print(N)
+    def InNub( self, event):
+        global N
+        N = int(self.m_textCtrl10.GetValue())
+        print(range(N))
 
 app = wx.App(False)
 frame = CalcFrame(None)
