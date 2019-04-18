@@ -10,24 +10,26 @@ import numpy as np
 class WaterNeed():
     """需水"""
 
-    def __init__(self,name,dinge):
+    def __init__(self,name,waterefficiency,dinge):
         """初始化属性名字和定额"""
         self.name = name
         self.dinge = dinge
+        self.waterefficiency = waterefficiency
 
     def Need(self):
         """需求计算"""
-        return self.dinge
+        return self.dinge/self.waterefficiency
 
 class GuanGai(WaterNeed):
     """灌溉用水"""
-    def __init__(self,name,dinge,size):
+    def __init__(self,name,waterefficiency,dinge,size):
         """初始化父类属性"""
-        super().__init__(name,dinge)
+        super().__init__(name,waterefficiency,dinge)
         self.size = size    # 面积
     def Need(self):
         """需求计算"""
-        return self.dinge*self.size
+        need = self.dinge*self.size/(self.waterefficiency* 10000)
+        return need
 
 # Early_rice = GuanGai("Early_rice",np.array([13,11]),1)
 # Middle_rice = GuanGai("Middle_rice",np.array([10,8]),1)
@@ -45,12 +47,12 @@ class GuanGai(WaterNeed):
 def Final_Need(environment,Non_environment):
     """计算最终需水:比较生态需水与其他需水,取较大值"""
     # 暂时略过其他需水之和计算
-    # n = len(Non_environment.Need)
-    n = 2 # 暂时设置定额序列长度为1
+    n = len(Non_environment.Need())
+    # n = N # 暂时设置定额序列长度为1
 
-    Final_Watter_Need = []
+    Final_Watter_Need = []   # 最终需水
     for i in range(n) :
-        if environment.Need()[i]>= Non_environment.Need()[i] :
+        if environment.Need()[i] >= Non_environment.Need()[i] :
             Final_Watter_Need.append(environment.Need()[i])
         else:
             Final_Watter_Need.append(Non_environment.Need()[i])
@@ -96,10 +98,10 @@ class RiverStorageCapacity():
 
     def WaterAvailable(self,Rain_Production, WaterNeed):
         """计算河道可供水量，同时更新河道水量"""
-        # Rain_Production:降雨产水序列 WaterNeed：需水序列
+        # Rain_Production:降雨产水序列  WaterNeed：需水序列
         wateravailable = np.zeros(len(Rain_Production))   # 河道供水能力
         for i in range(len(Rain_Production)):
-            print(self.StorageCapacity, Rain_Production, self.StorageCapacity_Min,wateravailable)
+            # print(self.StorageCapacity, Rain_Production, self.StorageCapacity_Min,wateravailable)
             wateravailable[i] = self.StorageCapacity + Rain_Production[i] - self.StorageCapacity_Min
             if wateravailable[i] >= WaterNeed[i]:
                 self.StorageCapacity = self.StorageCapacity + Rain_Production[i] - WaterNeed[i]
@@ -109,7 +111,7 @@ class RiverStorageCapacity():
                 self.StorageCapacity = self.StorageCapacity_Min
                 self.RiverWaterNeed.append(WaterNeed[i] - wateravailable[i])
                 # return wateravailable
-        return self.RiverWaterNeed
+        return self.RiverWaterNeed    # 经河道调蓄后的缺水量
 
 # river = RiverStorageCapacity(401)
 # print(river.Waterlevel())
@@ -127,7 +129,7 @@ class Waihe():
     def __init__(self,waterlevel):
         self.waterlevel = waterlevel
         self.waterlevel_Min = 26.2    # 固定地板高层
-        self.Water = []
+        self.Water = []    # 外河供水
     def WaterIn(self):
         for i in range(len(self.waterlevel)):
             if self.waterlevel[i] >= self.waterlevel_Min:
@@ -142,18 +144,17 @@ class Waihe():
 
 def Final_WaterAvailable(WaterIn,RiverWaterNeed):
     """最终可供水量"""
-    """修改此处输出"""
-    global Final_WaterAvailable
-    global Final_Watershortage
-    Final_WaterAvailable = []
+    global Final_WaterAvailable01    # 外河供水量
+    global Final_Watershortage    # 缺水量
+    Final_WaterAvailable01 = []
     Final_Watershortage = []
     for i in range(len(WaterIn)):
-        print(WaterIn, RiverWaterNeed)
+        # print(WaterIn, RiverWaterNeed)
         if WaterIn[i] > RiverWaterNeed[i]:
-            Final_WaterAvailable.append(RiverWaterNeed[i])
+            Final_WaterAvailable01.append(RiverWaterNeed[i])
             Final_Watershortage.append(0)
         else:
-            Final_WaterAvailable.append(WaterIn[i])
+            Final_WaterAvailable01.append(WaterIn[i])
             Final_Watershortage.append(RiverWaterNeed[i] - WaterIn[i])
-    return Final_WaterAvailable,Final_Watershortage
+    return Final_WaterAvailable01,Final_Watershortage
 # print(Final_WaterAvailable(Waihe.WaterIn(),river.RiverWaterNeed))

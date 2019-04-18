@@ -30,7 +30,7 @@ class CalcFrame(WB01.WB01):
 
     def InExcel02(self, event):
         """用于输入生态需水"""
-        global environment        # 非生态需水
+        global environment        # 生态需水
         wildcard = "Excel 工作簿(*.xlsx)|*.xlsx|Excel 97-2003 工作簿(*.xls)|*.xls"
         f = wx.FileDialog(self, "选择生态需水文件", os.getcwd(), "", wildcard, wx.FD_OPEN)
 
@@ -50,21 +50,23 @@ class CalcFrame(WB01.WB01):
         # environment
         m2, n2 = environment.shape[0], environment.shape[1]   # m为行，n为列
         # print(m2, n2)
-        if m2 != m1-1 :
+        if m2 != m1-2 :
             self.m_textCtrl9.SetValue("长度不一致")
             return
 
         # 开始赋值
         names = globals()
-        Non_environment_WaterNeed =  np.zeros([m1-1,n1])
+        Non_environment_WaterNeed =  np.zeros([m1-2,n1])
         a = []
         for i in range(n1):
-            names['Non_environment%s' %i] = WaterBalance.GuanGai(Non_environment.columns.values.tolist()[i], Non_environment.iloc[1:, i].values, Non_environment.iloc[0, i])
+            names['Non_environment%s' %i] = WaterBalance.GuanGai(Non_environment.columns.values.tolist()[i], Non_environment.iloc[1, i],Non_environment.iloc[2:, i].values, Non_environment.iloc[0, i])
             a.append(names['Non_environment%s' %i])
         # print(a[0].name)
         # print(a[0].Need())
-            Non_environment_WaterNeed[:, i]=a[i].Need()
-        Non_environment00 = WaterBalance.WaterNeed("Non_environment_WaterNeed",Non_environment_WaterNeed.sum(axis=1))
+            # print(a[i].Need())
+            Non_environment_WaterNeed[:, i] = a[i].Need()
+        # print(Non_environment_WaterNeed)
+        Non_environment00 = WaterBalance.WaterNeed("Non_environment_WaterNeed", 1, Non_environment_WaterNeed.sum(axis=1))
         # print(Non_environment00.Need())
         # print(Non_environment_WaterNeed)
         # print(Non_environment1.dinge)
@@ -72,16 +74,17 @@ class CalcFrame(WB01.WB01):
         # print(Non_environment1.Need())
 
         global environment0
-        environment0 = WaterBalance.WaterNeed('environment', environment.iloc[:, 0].values)
+        environment0 = WaterBalance.WaterNeed('environment', 1, environment.iloc[:, 0].values)
         # print(environment0.name)
         # print(environment0.dinge)
         # print(environment0.Need())
 
 
         global Final_Watter_Need
-        Final_Watter_Need = WaterBalance.Final_Need(environment0,Non_environment00)
+        # print(environment0.Need(), Non_environment00.Need())
+        Final_Watter_Need = WaterBalance.Final_Need(environment0, Non_environment00)
 
-        print(Final_Watter_Need)
+        print('最终需水:', Final_Watter_Need)
 
 
     #############################################################################
@@ -115,21 +118,24 @@ class CalcFrame(WB01.WB01):
 
     def WaterAvailable01(self, event):
         # 计算降雨产水的可用水量
+        # 需要修改
         global wateravailable
         global river
         wateravailable = []
         StorageCapacity = float(self.m_textCtrl13.GetValue())
         StorageCapacity_Min = float(self.m_textCtrl14.GetValue())
         river = WaterBalance.RiverStorageCapacity(StorageCapacity,StorageCapacity_Min)
+        # print(river.)
 
         # print(Rain.Production())
-        wateravailable = river.WaterAvailable(Rain.Production(), Final_Watter_Need)
-        # print(wateravailable)
+        wateravailable = river.WaterAvailable(Rain.Production(), Final_Watter_Need)    # 经河道调蓄后的缺水量
+        print('经河道调蓄后的缺水量:', wateravailable)
 
 
     def InExcel04(self, event):
         # 导入外河水位
         global waterlevel        # 外河水位
+        waterlevel = []
         wildcard = "Excel 工作簿(*.xlsx)|*.xlsx|Excel 97-2003 工作簿(*.xls)|*.xls"
         f = wx.FileDialog(self, "外河水位", os.getcwd(), "", wildcard, wx.FD_OPEN)
 
@@ -140,10 +146,16 @@ class CalcFrame(WB01.WB01):
 
 
     def FinalWaterAvailable(self, event):
-        Waihe = WaterBalance.Waihe(waterlevel.iloc[:, 0].values)    # 输入外河水位
-        Waihe.WaterIn()     # 计算外河可进水量
-        Final_WaterAvailable,Final_Watershortage = WaterBalance.Final_WaterAvailable(Waihe.Water, river.RiverWaterNeed)
-        print(Final_WaterAvailable,Final_Watershortage)
+        waihe01 = WaterBalance.Waihe(waterlevel.iloc[:, 0].values)    # 输入外河水位
+        waihe01.WaterIn()     # 计算外河可进水量
+        # 外河供水量
+        Final_WaterAvailable01 = []
+        Final_Watershortage01 = []
+        print('外河供水能力：', waihe01.Water)
+        print('经河道调蓄后的缺水量：', wateravailable)
+        Final_WaterAvailable01, Final_Watershortage01 = WaterBalance.Final_WaterAvailable(waihe01.Water, wateravailable)    # 外河供水量，缺水量 WaterBalance.Final_WaterAvailable
+        print('外河供水量：', Final_WaterAvailable01)
+        print('缺水量：', Final_Watershortage01)
 
 
 
@@ -160,7 +172,7 @@ class CalcFrame(WB01.WB01):
     def InNub( self, event):
         global N
         N = int(self.m_textCtrl10.GetValue())
-        print(range(N))
+        # print(range(N))
 
 app = wx.App(False)
 frame = CalcFrame(None)
