@@ -142,11 +142,18 @@ class Waihe():
 
 def Final_WaterAvailable(WaterIn,RiverWaterNeed):
     """最终可供水量"""
+    """修改此处输出"""
+    global Final_WaterAvailable
+    global Final_Watershortage
+    Final_WaterAvailable = []
+    Final_Watershortage = []
     for i in range(len(WaterIn)):
         print(WaterIn, RiverWaterNeed)
         if WaterIn[i] > RiverWaterNeed[i]:
-            return RiverWaterNeed[i], 0
+            Final_WaterAvailable.append(RiverWaterNeed[i])
+            Final_Watershortage.append(0)
         else:
-            return WaterIn[i], RiverWaterNeed[i] - WaterIn[i]
-
+            Final_WaterAvailable.append(WaterIn[i])
+            Final_Watershortage.append(RiverWaterNeed[i] - WaterIn[i])
+    return Final_WaterAvailable,Final_Watershortage
 # print(Final_WaterAvailable(Waihe.WaterIn(),river.RiverWaterNeed))

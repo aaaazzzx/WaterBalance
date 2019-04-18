@@ -142,7 +142,8 @@ class CalcFrame(WB01.WB01):
     def FinalWaterAvailable(self, event):
         Waihe = WaterBalance.Waihe(waterlevel.iloc[:, 0].values)    # 输入外河水位
         Waihe.WaterIn()     # 计算外河可进水量
-        print(WaterBalance.Final_WaterAvailable(Waihe.Water, river.RiverWaterNeed))
+        Final_WaterAvailable,Final_Watershortage = WaterBalance.Final_WaterAvailable(Waihe.Water, river.RiverWaterNeed)
+        print(Final_WaterAvailable,Final_Watershortage)
 
 
 
